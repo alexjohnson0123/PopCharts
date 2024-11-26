@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Remember to start the database server (or GCP SQL instance) before trying to connect to it
 ////////////////////////////////////////////
 /** S24, PHP (on Google Standard App Engine) connect to MySQL instance (GCP) **/
@@ -30,20 +31,19 @@
 ////////////////////////////////////////////
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on local XAMPP) **/
-// $username = 'your-username';
-// $password = 'your-password';
-// $host = 'localhost:3306';
-// $dbname = 'your-database';    
-// $dsn = "mysql:host=$host;dbname=$dbname";  
+$username = 'root';
+$password = '';
+$host = 'localhost:3306';
+$dbname = 'popcharts';    
+$dsn = "mysql:host=$host;dbname=$dbname";  
 ////////////////////////////////////////////
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
-$username = 'alj6yg'; 
-$password = 'Commodore64?';
-$host = 'mysql01.cs.virginia.edu';
-$dbname = 'alj6yg_a';
-$dsn = "mysql:host=$host;dbname=$dbname";
-
+// $username = 'alj6yg'; 
+// $password = 'Commodore64?';
+// $host = 'mysql01.cs.virginia.edu';
+// $dbname = 'alj6yg_a';
+// $dsn = "mysql:host=$host;dbname=$dbname";
 ////////////////////////////////////////////
 
 // To find a hostname, access phpMyAdmin

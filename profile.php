@@ -4,7 +4,6 @@ require("db.php");
 ?>
 
 <?php
-session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!empty($_POST['songName'])) {
@@ -39,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h1 class="mt-4">Profile</h1>
     <h4>Username: <?php echo $_SESSION['username']?></h4>
     <h4>Total Score: <?php echo totalScore()?></h4>
+    <h4>High Score: <?php echo maxScore()?></h4>
     <h4>Favorite Song: <?php echo getFavoriteSong() ?>
     </h4>
     <form action="<?php $_SERVER['PHP_SELF']?>" method="post" onsubmit="return validateInput()">

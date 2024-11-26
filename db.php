@@ -1,48 +1,14 @@
 <?php
-session_start();
 
-function getAllUsers() {
-    global $db;
-    $query = "SELECT * FROM Users";
-    $statement = $db->prepare($query);  // compile
-    $statement->execute();
-    $result = $statement->fetchAll();   // fetch()
-    $statement->closeCursor();
-
-    return $result;
+function alert($msg) {
+  echo "<script type='text/javascript'>alert('$msg');</script>";
 }
 
-function getChartID($chartDate) {
+function getRankings($chartDate) {
     global $db;
-    $query = "SELECT chartID FROM Chart WHERE chartDate = :chartDate";
+    $query = "SELECT * FROM Ranking NATURAL JOIN Song WHERE chartDate = :chartDate ORDER BY rank";
     $statement = $db->prepare($query);  // compile
     $statement->bindValue(':chartDate', $chartDate);
-    $statement->execute();
-    $result = $statement->fetch();   // fetch()
-    $statement->closeCursor();
-
-    $test = $result["chartID"];
-
-    return $test;
-}
-
-function getRankings($chartID) {
-    global $db;
-    $query = "SELECT * FROM Ranking NATURAL JOIN Song NATURAL JOIN Artist NATURAL JOIN SongStats WHERE chartID = :chartID ORDER BY rank";
-    $statement = $db->prepare($query);  // compile
-    $statement->bindValue(':chartID', $chartID);
-    $statement->execute();
-    $result = $statement->fetchAll();   // fetch()
-    $statement->closeCursor();
-
-    return $result;
-}
-
-function getSongName($songID) {
-    global $db;
-    $query = "SELECT songName FROM Song WHERE songID = :songID";
-    $statement = $db->prepare($query);  // compile
-    $statement->bindValue(':songID', $songID);
     $statement->execute();
     $result = $statement->fetchAll();   // fetch()
     $statement->closeCursor();
@@ -53,45 +19,27 @@ function getSongName($songID) {
 function addUser($username, $myPassword) {
     global $db;
     $passhash = password_hash($myPassword, PASSWORD_DEFAULT);
-    $Users = getUsers();
-    $userid = count($Users);
 
-    $query = "INSERT INTO `Users` (`userID`, `username`, `myPassword`) VALUES (:userid, :username, :myPassword);";
+    $query = "INSERT INTO `Users` (`username`, `myPassword`) VALUES (:username, :myPassword);";
     
     $statement = $db->prepare($query);
-    $statement->bindValue(':userid', $userid);
     $statement->bindValue(':username', $username);
     $statement->bindValue(':myPassword', $passhash);
+   
+    $unique = true;
+    try {
+      $statement->execute();
+      $statement->closeCursor();
+    } catch (Exception $e) { 
+      $unique = false;
+      alert("Username taken.");
+    } 
     
-    $statement->execute();
-    $statement->closeCursor();
-}
-
-function getUsers(){
-  global $db;
-
-  $query = "SELECT * FROM `Users`;";
-  $statement = $db->prepare($query);
-  $statement->execute();
-  $result = $statement->fetchAll();
-  $statement->closeCursor();
-  
-  return $result;
-}
-
-function getUserID($username){
-  global $db;
-
-  $query = "SELECT * FROM `Users` WHERE username = :username;";
-  $statement = $db->prepare($query);
-  $statement->bindValue(':username', $username);
-  $statement->execute();
-  $result = $statement->fetch();
-  $statement->closeCursor();
-  
-  $test = $result["userID"];
-
-  return $test;
+    if ($unique) {
+      $_SESSION['username'] = $username;
+      header("Location: popcharts.php");
+      die();
+    }
 }
 
 function signIn($username, $myPassword) {
@@ -104,118 +52,121 @@ function signIn($username, $myPassword) {
   $result = $statement->fetch(PDO::FETCH_ASSOC);
   $statement->closeCursor();
 
-  $passhash = $result['myPassword'];
-
-  if(password_verify($myPassword, $passhash))  {
-    $_SESSION['username'] = $username;
-    header("Location: popcharts.php");
-    die();
-  }
-}
-
-
-function scored($songID, $chartID){
-  global $db;
-
-  $userID = getUserID($_SESSION['username']);
-
-  $query = "SELECT * FROM Score WHERE chartID = :chartID AND songID = :songID AND userID = :userID;";
-  $statement = $db->prepare($query);
-  $statement->bindValue(':userID', $userID);
-  $statement->bindValue(':songID', $songID);
-  $statement->bindValue(':chartID', $chartID);
-  $statement->execute();
-  
-  if($statement->rowCount() == 1){
-    return true;
+  if (!$result) {
+    alert("Incorrect username or password.");
   } else {
-    return false;
+
+    $passhash = $result['myPassword'];
+
+    if(password_verify($myPassword, $passhash))  {
+      $_SESSION['username'] = $username;
+      header("Location: popcharts.php");
+      die();
+    } else {
+      alert("Incorrect username or password.");
+    }
   }
 }
 
-function getSongIDs($songName){
+function score($puzzleDate, $score) {
   global $db;
 
-  $query = "SELECT * FROM Song WHERE songName = :songName";
+  $query = "INSERT INTO Score (username, puzzleDate, score) VALUES (:username, :puzzleDate, :score);";
   $statement = $db->prepare($query);
-  $statement->bindValue(':songName', $songName);
+  $statement->bindValue(':puzzleDate', $puzzleDate);
+  $statement->bindValue(':score', $score);
+  $statement->bindValue(':username', $_SESSION['username']);
   $statement->execute();
-  $result = $statement->fetch();
+
   $statement->closeCursor();
+}
+
+function getSongs() {
+  global $db;
+
+  $query = "SELECT songName, artistName FROM Song";
+  $statement = $db->prepare($query);
+  $statement->execute();
+  $result = $statement->fetchAll();
 
   return $result;
 }
 
-
-function score($songName, $chartID){
+function getScore($puzzleDate) {
   global $db;
 
-  $songIDs = getSongIDs($songName);
-  $userID = getUserID($_SESSION['username']);
+  $query = "SELECT score FROM Score WHERE username = :username AND puzzleDate = :puzzleDate";
 
-  foreach ($songIDs as $songID) {
-    $query = "INSERT INTO Score (chartID, songID, userID) VALUES (:chartID, :songID, :userID);";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':chartID', $chartID);
-    $statement->bindValue(':songID', $songID);
-    $statement->bindValue(':userID', $userID);
-    $statement->execute();
-  }
+  $statement = $db->prepare($query);
+  $statement->bindValue(':username', $_SESSION['username']);
+  $statement->bindValue(':puzzleDate', $puzzleDate);
+  $statement->execute();
+  $result = $statement->fetchAll();
+
+  return $result;
 }
 
-function getFavoriteSong() {
+function getChart($date) {
   global $db;
-  $userID = getUserID($_SESSION['username']);
 
-  $query = "SELECT * FROM FavoriteSong NATURAL JOIN Song WHERE userID = :userID";
+  $query = "SELECT chartDate FROM puzzle WHERE puzzleDate = :puzzleDate";
+
   $statement = $db->prepare($query);
-  $statement->bindValue(':userID', $userID);
+  $statement->bindValue(':puzzleDate', $date);
   $statement->execute();
-  $result = $statement->fetch();
-  $statement->closeCursor();
 
-  $test = $result['songName'];
+  $result = $statement->fetchAll();
 
-  return $test;
+  if (count($result) > 0) {
+    return $result[0]['chartDate'];
+  } else {
+    $randQuery = "SELECT chartDate FROM ranking ORDER BY RAND() LIMIT 1";
+    $randStatement = $db->prepare($randQuery);
+    $randStatement->execute();
+    $randResult = $randStatement->fetch();
+    
+    $insertQuery = "INSERT INTO puzzle (puzzleDate, chartDate) VALUES (:puzzleDate, :chartDate);";
+    $insertStatement = $db->prepare($insertQuery);
+    $insertStatement->bindValue(':puzzleDate', $date);
+    $insertStatement->bindValue(':chartDate', $randResult['chartDate']);
+    $insertStatement->execute();
+
+    return $randResult['chartDate'];
+  }
 }
 
 function totalScore() {
   global $db;
-  $userID = getUserID($_SESSION['username']);  
 
-  $query = "SELECT * FROM Score WHERE userID = :userID;";
+  $query = "SELECT SUM(score) FROM Score WHERE username = :username;";
   $statement = $db->prepare($query);
-  $statement->bindValue(':userID', $userID);
+  $statement->bindValue(':username', $_SESSION['username']);
   $statement->execute();
-  $result = $statement->fetch();
+  $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-  $count = count($result);
-  return $count;
+  return $result['SUM(score)'];
 }
 
-function getSongID($songName) {
+function maxScore() {
   global $db;
 
-  $query = "SELECT * FROM Song WHERE songName = :songName;";
+  $query = "SELECT MAX(score) FROM Score WHERE username = :username;";
   $statement = $db->prepare($query);
-  $statement->bindValue(':songName', $songName);
+  $statement->bindValue(':username', $_SESSION['username']);
   $statement->execute();
-  $result = $statement->fetch();
+  $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-  $songID = $result["songID"];
-  return $songID;
+  return $result['MAX(score)'];
 }
 
 function setFavoriteSong($songName) {
   global $db;
-  $songID = getSongID($songName);
-  $userID = getUserID($_SESSION['username']);  
 
-  $query = "INSERT INTO `FavoriteSong` (`userID`, `songID`) VALUES (:userid, :songID);";
+  $query = "INSERT INTO `FavoriteSong` (`username`, `songName`) VALUES (:username, :songName) ON DUPLICATE KEY UPDATE songName=:songName;";
   
   $statement = $db->prepare($query);
-  $statement->bindValue(':userid', $userID);
-  $statement->bindValue(':songID', $songID);
+  $statement->bindValue(':username', $_SESSION['username']);
+  $statement->bindValue(':songName', $songName);
   
   $statement->execute();
   $statement->closeCursor();
@@ -223,15 +174,12 @@ function setFavoriteSong($songName) {
 
 function setFavoriteArtist($artistName) {
   global $db;
-  $artistID = getArtistID($artistName);
-  $userID = getUserID($_SESSION['username']);  
 
-
-  $query = "INSERT INTO `FavoriteArtist` (`userID`, `artistID`) VALUES (:userid, :artistID);";
+  $query = "INSERT INTO `FavoriteArtist` (`username`, `artistName`) VALUES (:username, :artistName) ON DUPLICATE KEY UPDATE artistName=:artistName;";
   
   $statement = $db->prepare($query);
-  $statement->bindValue(':userid', $userID);
-  $statement->bindValue(':artistID', $artistID);
+  $statement->bindValue(':username', $_SESSION['username']);
+  $statement->bindValue(':artistName', $artistName);
   
   $statement->execute();
   $statement->closeCursor();
@@ -239,31 +187,36 @@ function setFavoriteArtist($artistName) {
 
 function getFavoriteArtist() {
   global $db;
-  $userID = getUserID($_SESSION['username']);
 
-  $query = "SELECT * FROM FavoriteArtist NATURAL JOIN Artist WHERE userID = :userID";
+  $query = "SELECT artistName FROM favoriteArtist WHERE username = :username";
   $statement = $db->prepare($query);
-  $statement->bindValue(':userID', $userID);
+  $statement->bindValue(':username', $_SESSION['username']);
   $statement->execute();
   $result = $statement->fetch();
   $statement->closeCursor();
 
-  $test = $result['artistName'];
-
-  return $test;
+  if ($result) {
+    return $result['artistName'];
+  } else {
+    return "None yet!";
+  }
 }
 
-function getArtistID($artistName) {
+function getFavoriteSong() {
   global $db;
 
-  $query = "SELECT * FROM Artist WHERE artistName = :artistName;";
+  $query = "SELECT songName FROM favoritesong WHERE username = :username";
   $statement = $db->prepare($query);
-  $statement->bindValue(':artistName', $artistName);
+  $statement->bindValue(':username', $_SESSION['username']);
   $statement->execute();
   $result = $statement->fetch();
+  $statement->closeCursor();
 
-  $songID = $result["artistID"];
-  return $songID;
+  if ($result) {
+    return $result['songName'];
+  } else {
+    return "None yet!";
+  }
 }
 
 ?>

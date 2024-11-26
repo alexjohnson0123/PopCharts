@@ -4,7 +4,6 @@ require("db.php");
 ?>
 
 <?php
-session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   signIn($_POST['username'],$_POST['myPassword']);
 }
@@ -17,9 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta charset="utf-8">    
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Upsorn Praphamontripong">
+  <meta name="author" content="Alex Johnson">
   <meta name="description" content="A music trivia web app, developed for UVA Database Systems">
-  <meta name="keywords" content="CS 3250, Upsorn, Praphamontripong, Software Testing">
   <link rel="icon" type="image/png" href="https://www.cs.virginia.edu/~up3f/cs4750/images/db-icon.png" />
   
   <title>Pop Charts</title>
