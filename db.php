@@ -6,7 +6,7 @@ function alert($msg) {
 
 function getRankings($chartDate) {
     global $db;
-    $query = "SELECT * FROM Ranking NATURAL JOIN Song WHERE chartDate = :chartDate ORDER BY rank";
+    $query = "SELECT * FROM Ranking chartDate = :chartDate ORDER BY rank";
     $statement = $db->prepare($query);  // compile
     $statement->bindValue(':chartDate', $chartDate);
     $statement->execute();
