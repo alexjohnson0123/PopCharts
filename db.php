@@ -6,7 +6,7 @@ function alert($msg) {
 
 function getRankings($chartDate) {
     global $db;
-    $query = "SELECT * FROM Ranking chartDate = :chartDate ORDER BY rank";
+    $query = "SELECT * FROM Ranking WHERE chartDate = :chartDate ORDER BY songRank";
     $statement = $db->prepare($query);  // compile
     $statement->bindValue(':chartDate', $chartDate);
     $statement->execute();
@@ -37,7 +37,7 @@ function addUser($username, $myPassword) {
     
     if ($unique) {
       $_SESSION['username'] = $username;
-      header("Location: popcharts.php");
+      header("Location: index.php");
       die();
     }
 }
@@ -60,7 +60,7 @@ function signIn($username, $myPassword) {
 
     if(password_verify($myPassword, $passhash))  {
       $_SESSION['username'] = $username;
-      header("Location: popcharts.php");
+      header("Location: index.php");
       die();
     } else {
       alert("Incorrect username or password.");
@@ -109,7 +109,7 @@ function getScore($puzzleDate) {
 function getChart($date) {
   global $db;
 
-  $query = "SELECT chartDate FROM puzzle WHERE puzzleDate = :puzzleDate";
+  $query = "SELECT chartDate FROM Puzzle WHERE puzzleDate = :puzzleDate";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':puzzleDate', $date);
@@ -120,12 +120,12 @@ function getChart($date) {
   if (count($result) > 0) {
     return $result[0]['chartDate'];
   } else {
-    $randQuery = "SELECT chartDate FROM ranking ORDER BY RAND() LIMIT 1";
+    $randQuery = "SELECT chartDate FROM Ranking ORDER BY RAND() LIMIT 1";
     $randStatement = $db->prepare($randQuery);
     $randStatement->execute();
     $randResult = $randStatement->fetch();
     
-    $insertQuery = "INSERT INTO puzzle (puzzleDate, chartDate) VALUES (:puzzleDate, :chartDate);";
+    $insertQuery = "INSERT INTO Puzzle (puzzleDate, chartDate) VALUES (:puzzleDate, :chartDate);";
     $insertStatement = $db->prepare($insertQuery);
     $insertStatement->bindValue(':puzzleDate', $date);
     $insertStatement->bindValue(':chartDate', $randResult['chartDate']);

@@ -44,3 +44,8 @@ footer {
   object-fit: cover;
   object-position: 100% 50%;
 }
+
+#table-row {
+	margin-left: 5px;
+	margin-right: 5px;
+}

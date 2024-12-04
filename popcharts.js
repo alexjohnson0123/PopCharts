@@ -9,7 +9,7 @@ const maxHints = 2;
 
 let guessed = [];
 let hints = [];
-let guesses = 10;
+let guesses = 15;
 
 for (let i = 0; i < rankings.length; i++) {
   guessed.push(false);
@@ -36,12 +36,9 @@ function renderTable() {
     // Format and add entries
     tableHtml += `
       <tr>
-        <th>${ranking.rank}</th>
+        <th>${ranking.songRank}</th>
         <td>${songDisplay}</td>
         <td>${ranking.artistName}</td>
-        <td>${ranking.lastWeek}</td>
-        <td>${ranking.peakRank}</td>
-        <td>${ranking.weeksOnTop}</td>
         <td><button id="hint-btn-${i}" onclick="getHint(${i})" type="button" class="hint btn btn-light">Hint?</button></td>
       </tr>`;
   }
@@ -55,8 +52,8 @@ function renderTable() {
     }
   }
 
-  let date = chartDate.split('-');
-  dateText.innerText = date[1] + "/" + date[2] + "/" + date[0];
+  let date = new Date(chartDate); 
+  dateText.innerText = date.toDateString().slice(4);
 
   if (signedIn && !gameOver) {
     scoreText.innerText = "Score: " + getScore();

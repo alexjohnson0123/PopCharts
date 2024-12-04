@@ -39,22 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h4>Username: <?php echo $_SESSION['username']?></h4>
     <h4>Total Score: <?php echo totalScore()?></h4>
     <h4>High Score: <?php echo maxScore()?></h4>
-    <h4>Favorite Song: <?php echo getFavoriteSong() ?>
-    </h4>
-    <form action="<?php $_SERVER['PHP_SELF']?>" method="post" onsubmit="return validateInput()">
-      <div class="input-group" style="max-width:600px">
-        <input type="text" class="form-control" id="songName" name="songName" placeholder="Change">
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </div>
-    </form>
-    <h4>Favorite Artist: <?php echo getFavoriteArtist() ?>
-    </h4>
-    <form action="<?php $_SERVER['PHP_SELF']?>" method="post" onsubmit="return validateInput()">
-      <div class="input-group" style="max-width:600px">
-        <input type="text" class="form-control" id="artistName" name="artistName" placeholder="Change">
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </div>
-    </form>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

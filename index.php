@@ -54,7 +54,7 @@ if (isset($_SESSION['username'])) {
 
 <body>  
   <?php include("header.php"); ?>
-  <div class="container text-center">
+  <div class="container text-center" id="container-main">
     <div class="row g-3 mt-4 mb-2">
       <h2>Billboard top 10 chart for <span id="dateText"></span></h2>
     </div>
@@ -86,16 +86,13 @@ if (isset($_SESSION['username'])) {
     <div class="row">
       <span id="alert" style="display:none">Hidden alert text</span>
     </div>
-    <div class = "row">
+    <div class = "row" id="table-row">
       <table class="table table-hover">
         <thead>
           <tr>
             <th scope="col">Rank</th>
             <th scope="col">Song</th>
             <th scope="col">Artist</th>
-            <th scope="col">Last Week</th>
-            <th scope="col">Peak Rank</th>
-            <th scope="col">Weeks on Chart</th>
             <th scope="col"></th>
           </tr>
         </thead>
