@@ -11,6 +11,16 @@ let guessed = [];
 let hints = [];
 let guesses = 15;
 
+// Check localstorage for existing game data
+const localDate = localStorage.getItem("date");
+
+if(localDate === chartDate) {
+	guesses = Number(localStorage.getItem("guesses"));
+} else {
+	localStorage.setItem("date", chartDate);
+	localStorage.setItem("guesses", guesses);
+}
+
 for (let i = 0; i < rankings.length; i++) {
   guessed.push(false);
   hints.push(0);
@@ -100,6 +110,7 @@ function makeGuess(e) {
   input.value = "";
 
   guesses--;
+  localStorage.setItem("guesses", guesses);
   if (guesses <= 0) {
     giveUp();
   } else {
