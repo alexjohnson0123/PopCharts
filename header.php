@@ -16,7 +16,9 @@
         <ul class="navbar-nav ms-auto">
           <!-- check if currently logged in, display Log out button 
                otherwise, display sign up and log in buttons -->
-          <?php if (!isset($_SESSION['username'])) { ?>              
+          <?php 
+          if (!isset($_SESSION['username'])) 
+          { ?>              
             <li class="nav-item">
               <a class="nav-link" href="register.php">Register</a>
             </li>

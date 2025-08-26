@@ -4,6 +4,7 @@ require("db.php");
 ?>
 
 <?php
+
 $date = date('y-m-d');
 $chartDate = getChart($date);
 

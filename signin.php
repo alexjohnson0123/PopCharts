@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>  
-<?php include("php/header.php"); ?>
+<?php include("header.php"); ?>
   
 <div class="container">
   <div class="row">
