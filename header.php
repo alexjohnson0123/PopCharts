@@ -18,17 +18,17 @@
                otherwise, display sign up and log in buttons -->
           <?php if (!isset($_SESSION['username'])) { ?>              
             <li class="nav-item">
-              <a class="nav-link" href="php/register.php">Register</a>
+              <a class="nav-link" href="register.php">Register</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="php/signin.php">Sign in</a>
+              <a class="nav-link" href="signin.php">Sign in</a>
             </li>              
           <?php  } else { ?>                    
             <li class="nav-item">
-            <a class="nav-link" href="php/profile.php">Profile</a>
+            <a class="nav-link" href="profile.php">Profile</a>
             </li>
             <li class="nav-item">                  
-              <a class="nav-link" href="php/signout.php">Sign out</a>
+              <a class="nav-link" href="signout.php">Sign out</a>
             </li>
           <?php } ?>
         </ul>
