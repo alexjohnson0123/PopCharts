@@ -1,6 +1,6 @@
 <?php
 require("connect-db.php");
-require("db.php");
+require("php/db.php");
 ?>
 
 <?php
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>  
-<?php include("header.php"); ?>
+<?php include("php/header.php"); ?>
   
 <div class="container">
   <div class="row">

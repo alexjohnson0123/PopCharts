@@ -1,6 +1,6 @@
 <?php
 require("connect-db.php");
-require("db.php");
+require("php/db.php");
 ?>
 
 <?php

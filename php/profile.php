@@ -1,6 +1,6 @@
 <?php
 require("connect-db.php");
-require("db.php");
+require("php/db.php");
 ?>
 
 <?php
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>  
-  <?php include("header.php"); ?>
+  <?php include("php/header.php"); ?>
   <div class="container">
     <h1 class="mt-4">Profile</h1>
     <h4>Username: <?php echo $_SESSION['username']?></h4>
