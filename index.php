@@ -9,7 +9,7 @@ $date = date('y-m-d');
 $chartDate = getChart($date);
 
 $rankings = getRankings($chartDate);
-$songs = getSongs();
+$songs = json_encode(getSongs());
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   score($date, $_POST['score']);
@@ -77,12 +77,28 @@ if (isset($_SESSION['username'])) {
       </div>  
       <div class="row">
         <form id="songForm">
-            <input type="text" id="songInput" placeholder="Guess a song name" required>
-            <button type="submit">Submit</button>
+          <div class="input-group mb-3">
+            <input type="text" id="songInput" class="form-control" placeholder="Guess a song name" list="songsList" autocomplete="off" required>
+            <datalist id="songsList"></datalist>
+
+            <script>
+              
+              let songs = <?php echo $songs ?>;
+              const datalist = document.getElementById("songsList");
+              songs.forEach((song) => {
+                const option = document.createElement('option');
+                option.value = song;
+                datalist.appendChild(option);
+              });
+
+            </script>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
         </form>
       </div>
       <div class="row">
-        <div class="col"><button id="giveUpButton" type="button">Give Up?</button></div>
+        <div class="col"><button id="giveUpButton" type="button" class="btn btn-outline-danger">Give Up?</button></div>
       </div>
     <?php  } else { ?>
       <script>var signedIn = true;</script>

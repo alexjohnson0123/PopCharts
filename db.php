@@ -85,10 +85,10 @@ function score($puzzleDate, $score) {
 function getSongs() {
   global $db;
 
-  $query = "SELECT songName, artistName FROM Song";
+  $query = "SELECT songName FROM Song";
   $statement = $db->prepare($query);
   $statement->execute();
-  $result = $statement->fetchAll();
+  $result = $statement->fetchAll(PDO::FETCH_COLUMN);
 
   return $result;
 }
