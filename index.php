@@ -109,7 +109,7 @@ if (isset($_SESSION['username'])) {
       <span id="alert" style="display:none">Hidden alert text</span>
     </div>
     <div class = "row" id="table-row">
-      <table class="table table-hover">
+      <table id="chart-table" class="table table-hover">
         <thead>
           <tr>
             <th scope="col">Rank</th>
