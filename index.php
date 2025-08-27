@@ -17,11 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $json = json_encode($rankings);
 $dateString = json_encode($chartDate);
+$playername = "";
+if(isset($_SESSION['username'])) {
+  $playername = $_SESSION['username'];
+}
 
 echo  "<script>
         var rankings = $json;
         var chartDate = $dateString;
         var gameOver = false;
+        var username = '$playername';
       </script>";
 
 if (isset($_SESSION['username'])) {

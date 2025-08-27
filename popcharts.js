@@ -9,16 +9,23 @@ const maxHints = 2;
 
 let guessed = [];
 let hints = [];
-let guesses = 15;
+
+const GUESS_COUNT = 15;
+let guesses = GUESS_COUNT;
 
 // Check localstorage for existing game data
 const localDate = localStorage.getItem("date");
+
+if(username !== localStorage.getItem("username")) {
+  localStorage.setItem("username", username);
+  localStorage.setItem("guesses", GUESS_COUNT);
+}
 
 if(localDate === chartDate) {
 	guesses = Number(localStorage.getItem("guesses"));
 } else {
 	localStorage.setItem("date", chartDate);
-	localStorage.setItem("guesses", guesses);
+	localStorage.setItem("guesses", GUESS_COUNT);
 }
 
 for (let i = 0; i < rankings.length; i++) {
