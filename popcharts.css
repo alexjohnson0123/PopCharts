@@ -14,11 +14,6 @@ body {
   flex-direction: column;
 }
 
-html,
-body {
-  height: 100%;
-}
-
 #page-container {
   position: relative;  /* absolute;  */
   min-height: 100vh;
